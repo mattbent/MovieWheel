@@ -3,9 +3,9 @@ import java.io.*;
 import java.util.Random;
 
 public class MovieWheel{
-  public static void main(String[] args) {
+  public static void main(String[] args) throws FileNotFoundException{
     String movieList[] = new String[20];
-    File file;
+    File file = null;
     boolean usingFile = false;
     System.out.println("Please Choose your input method");
     Scanner keyboard = new Scanner(System.in);
@@ -21,7 +21,16 @@ public class MovieWheel{
 
       String filename = keyboard.nextLine();
       file = new File(filename);
-      Scanner fileScanner = new Scanner(file);
+      Scanner fileScanner;
+
+      try {
+        fileScanner = new Scanner(file);
+      }
+      catch (FileNotFoundException e) {
+        System.out.println("File not found");
+        return;
+      }
+
       while(fileScanner.hasNextLine()){
         movieList[count] = fileScanner.nextLine();
         count++;
@@ -68,20 +77,35 @@ public class MovieWheel{
 
   public static void removeLine(String toRemove, File file){
     File tempFile = new File("myTempFile.txt");
+    BufferedReader reader = null;
+    BufferedWriter writer = null;
+    try {
+      reader = new BufferedReader(new FileReader(file));
 
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-    String currentLine;
-
-    while((currentLine = reader.readLine()) != null) {
-    // trim newline when comparing with lineToRemove
-      String trimmedLine = currentLine.trim();
-      if(trimmedLine.equals(toRemove)) continue;
-      writer.write(currentLine + System.getProperty("line.separator"));
+    } catch(FileNotFoundException ex) {
+      System.out.println("FILE ERROR");
     }
-    writer.close();
-    reader.close();
+
+    try {
+      writer = new BufferedWriter(new FileWriter(tempFile));
+      String currentLine;
+      while((currentLine = reader.readLine()) != null) {
+      // trim newline when comparing with lineToRemove
+        String trimmedLine = currentLine.trim();
+        if(trimmedLine.equals(toRemove)) continue;
+        writer.write(currentLine + System.getProperty("line.separator"));
+      }
+      writer.close();
+      reader.close();
+    } catch(IOException io) {
+      System.out.println("IO ERROR");
+    }
+
+
+
+
+
     boolean successful = tempFile.renameTo(file);
   }
 }
