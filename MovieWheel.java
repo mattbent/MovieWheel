@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.io.*;
 import java.util.Random;
+import java.util.Arrays;
 
 public class MovieWheel{
   public static void main(String[] args) throws FileNotFoundException{
@@ -11,9 +12,8 @@ public class MovieWheel{
     Scanner keyboard = new Scanner(System.in);
     System.out.println("Press F to import movies from file OR press I for direct input");
     String answer = keyboard.nextLine();
-    keyboard.close();
     int count = 0;
-    if (answer == "F") {
+    if (answer.equals("F")) {
 
       usingFile = true;
 
@@ -27,6 +27,7 @@ public class MovieWheel{
         fileScanner = new Scanner(file);
       }
       catch (FileNotFoundException e) {
+        System.out.println();
         System.out.println("File not found");
         return;
       }
@@ -37,23 +38,21 @@ public class MovieWheel{
       }
       fileScanner.close();
     }
-    else {
+    else{
       System.out.println("Enter movies and hit enter between each title, Type"
       +" 'END' and hit enter to finish\nMax 20 lines\n");
-      Scanner movieInput = new Scanner(System.in);
-      String movieTitle = movieInput.nextLine();
-      while(movieTitle != "END"){
+
+      String movieTitle = keyboard.nextLine();
+      while(!movieTitle.equals("END")){
         movieList[count] = movieTitle;
         count++;
-        movieTitle = movieInput.nextLine();
+        movieTitle = keyboard.nextLine();
       }
-      movieInput.close();
 
     }
-
     String movies[] = new String[count];
-    for (int i = 0;i <= count; i++) {
-      movies[count] = movieList[count];
+    for (int i = 0;i < count; i++) {
+      movies[i] = movieList[i];
     }
 
     Random rand = new Random();
@@ -64,9 +63,8 @@ public class MovieWheel{
 
     if (usingFile) {
       System.out.println("Would you like to remove this movie from the movie file?(Y for Yes, N for No)");
-      Scanner ans = new Scanner(System.in);
-      String remove = ans.nextLine();
-      if (remove == "Y") {
+      String remove = keyboard.nextLine();
+      if (remove.equals("Y")) {
         removeLine(movies[n], file);
         System.out.println("Movie Removed");
       }
@@ -101,10 +99,6 @@ public class MovieWheel{
     } catch(IOException io) {
       System.out.println("IO ERROR");
     }
-
-
-
-
 
     boolean successful = tempFile.renameTo(file);
   }
